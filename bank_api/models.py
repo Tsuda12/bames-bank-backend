@@ -1,6 +1,9 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.conf import settings
+from datetime import datetime, timedelta
+import jwt
 
 
 class CustomUserManager(BaseUserManager):
@@ -34,6 +37,19 @@ class User(AbstractUser):
     objects = CustomUserManager()
     USERNAME_FIELD = "cpf"
     REQUIRED_FIELDS = ["username", "email", "wage", "password"]
+
+    @property
+    def token(self):
+        token = jwt.encode({
+            'username':self.username,
+            'cpf': self.cpf,
+            'email': self.email,
+            'wage': str(self.wage),
+            'password': self.password,
+            'exp': datetime.utcnow() + timedelta(hours=24)
+        }, settings.SECRET_KEY, algorithm='HS256')
+
+        return token
 
     def __str__(self):
         return self.username
