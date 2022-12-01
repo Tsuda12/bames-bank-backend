@@ -41,4 +41,52 @@ class LoginAPIView(GenericAPIView):
         if user:
             serializer = self.serializer_class(user)
             return response.Response(serializer.data, status=status.HTTP_200_OK)
-        return response.Response({'message': 'Invalid credentials'}, status=status.HTTP_401_OK)
+        return response.Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class TransferAPIView(GenericAPIView):
+    # queryset = Transfer.objects.all()
+    serializer_class = TransferSerializer
+    authentication_classes = []
+
+    def post(self, request):
+        send = User.objects.get(pk=request.data['send'])
+        receive = User.objects.get(pk=request.data['receive'])
+        value = decimal.Decimal(request.data['value'])
+
+        print(send.password)
+
+        if send.balance >= value:
+            sender_object = {
+                'username': send.username,
+                'cpf': send.cpf,
+                'email': send.email,
+                'wage': send.wage,
+                'agency': send.agency,
+                'balance': send.balance - value,
+                'password': send.password
+            }
+            serializer = UserSerializer(send, data=sender_object)
+
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            receive_object = {
+                'username': send.username,
+                'cpf': send.cpf,
+                'email': send.email,
+                'wage': send.wage,
+                'agency': send.agency,
+                'balance': send.balance + value,
+                'password': send.password
+            }
+            serializer = UserSerializer(receive, data=receive_object)
+
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        return 

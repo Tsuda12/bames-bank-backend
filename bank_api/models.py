@@ -33,14 +33,26 @@ class User(AbstractUser):
     cpf = models.CharField(max_length=14, unique=True)
     email = models.CharField(max_length=80, unique=True)
     wage = models.DecimalField(max_digits=9, decimal_places=2)
+    
     # Account settings
     agency = models.CharField(max_length=6, editable=False)
-
+    balance = models.DecimalField(max_digits=9, decimal_places=2)
 
     objects = CustomUserManager()
     USERNAME_FIELD = "cpf"
     REQUIRED_FIELDS = ["username", "email", "wage", "password"]
 
+    @property
+    def account_number(self):
+        cpf = self.cpf
+        number_concat = ""
+        for i in cpf:
+            number_concat += i
+            if len(number_concat) == 7:
+                break
+        number_concat = number_concat.replace(".", "0")
+        number_final = number_concat+"-"+"0"
+        return number_final
 
     @property
     def token(self):
@@ -57,3 +69,12 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+class Transfer(models.Model):
+    send = models.ForeignKey(User, related_name='send', on_delete=models.PROTECT)
+    receive = models.ForeignKey(User, related_name='receive', on_delete=models.PROTECT)
+    value = models.DecimalField(max_digits=9, decimal_places=2)
+
+    def __str__(self):
+        return self.send

@@ -6,29 +6,13 @@ import decimal
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(min_length=6, max_length=6, write_only=True)
+    account_number = serializers.ReadOnlyField()
     agency = serializers.CharField(default='2582-0')
-    # Random number generate
-    number = serializers.SerializerMethodField()
-    balance = serializers.SerializerMethodField()
+    balance = serializers.DecimalField(max_digits=9, decimal_places=2, default=2000.00)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'cpf', 'email', 'wage', 'password', 'number', 'agency', 'balance']
-
-    def get_number(self, obj):
-        if obj.agency == "2582-0":
-            number_account = ""
-            for i in range(1, 8):
-                rand_number = str(randint(1, 9))
-                number_account += rand_number
-            number_account_format = number_account+"-"+"0"
-            return number_account_format
-
-    def get_balance(self, obj):
-        if obj.wage >= 0:
-            balance_value = decimal.Decimal(randint(1000, 5000))
-        return balance_value
-    
+        fields = ['id', 'username', 'cpf', 'email', 'wage', 'password', 'account_number', 'agency', 'balance']
 
     def create(self, validated_data):
         user = User.objects.create_superuser(
@@ -38,6 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
             wage=validated_data['wage'],
             password=validated_data['password'],
             agency=validated_data['agency'],
+            balance=validated_data['balance'],
         )
 
         return user
@@ -50,3 +35,9 @@ class LoginSerializer(serializers.ModelSerializer):
         model = User
         fields = ['cpf', 'password', 'token']
         read_only_fields = ['token']
+
+
+class TransferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transfer
+        fields = ['send', 'receive', 'value']
