@@ -32,7 +32,7 @@ class User(AbstractUser):
     cpf = models.CharField(max_length=14, unique=True)
     email = models.CharField(max_length=80, unique=True)
     wage = models.DecimalField(max_digits=9, decimal_places=2)
-    # profile_image = models.ImageField()
+    agency = models.CharField(max_length=6, editable=False)
 
     objects = CustomUserManager()
     USERNAME_FIELD = "cpf"
@@ -46,7 +46,7 @@ class User(AbstractUser):
             'email': self.email,
             'wage': str(self.wage),
             'password': self.password,
-            'exp': datetime.utcnow() + timedelta(hours=24)
+            'exp': datetime.utcnow() + timedelta(hours=1)
         }, settings.SECRET_KEY, algorithm='HS256')
 
         return token

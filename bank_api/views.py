@@ -14,8 +14,10 @@ class AuthUserAPIView(GenericAPIView):
         
         return response.Response({'user': serializer.data})
 
+
 class RegisterAPIView(GenericAPIView):
     serializer_class = UserSerializer
+    authentication_classes = []
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -28,6 +30,7 @@ class RegisterAPIView(GenericAPIView):
 
 class LoginAPIView(GenericAPIView):
     serializer_class = LoginSerializer
+    authentication_classes = []
 
     def post(self, request):
         cpf = request.data.get('cpf', None)

@@ -29,6 +29,12 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL="bank_api.User"
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'bank_api.jwt.JWTAuthentication',
+    ]
+}
+
 
 # Application definition
 
