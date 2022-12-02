@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/c80f5fc4-4ecd-497f-bf51-55eb8fc3627c/AppServices/subscriptions/c80f5fc4-4ecd-497f-bf51-55eb8fc3627c/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/bames-api",
+    "appService.deploySubpath": "."
+}
