@@ -1,6 +1,9 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework_nested import routers
 from .views import *
 
+# router = routers.DefaultRouter()
+# router.register('', TransferViewSet, basename='transfer')
 
 urlpatterns = [
     path('register', RegisterAPIView.as_view(), name='register'),

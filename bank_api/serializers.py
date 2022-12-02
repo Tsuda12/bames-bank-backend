@@ -1,11 +1,9 @@
 from rest_framework import serializers
+from django.contrib.auth.hashers import make_password
 from .models import *
-from random import randint
-import decimal
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(min_length=6, max_length=6, write_only=True)
     account_number = serializers.ReadOnlyField()
     agency = serializers.CharField(default='2582-0')
     balance = serializers.DecimalField(max_digits=9, decimal_places=2, default=2000.00)
@@ -29,8 +27,6 @@ class UserSerializer(serializers.ModelSerializer):
         
 
 class LoginSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(min_length=6, max_length=6, write_only=True)
-
     class Meta:
         model = User
         fields = ['cpf', 'password', 'token']

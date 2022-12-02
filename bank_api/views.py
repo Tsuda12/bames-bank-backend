@@ -1,8 +1,11 @@
 from rest_framework.generics import GenericAPIView
+from rest_framework import viewsets
 from rest_framework import response, status
 from django.contrib.auth import authenticate
 from rest_framework import permissions
+from django.contrib.auth.hashers import reset_hashers
 from .serializers import *
+import decimal
 
 
 class AuthUserAPIView(GenericAPIView):
@@ -45,16 +48,13 @@ class LoginAPIView(GenericAPIView):
 
 
 class TransferAPIView(GenericAPIView):
-    # queryset = Transfer.objects.all()
     serializer_class = TransferSerializer
-    authentication_classes = []
+    permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
         send = User.objects.get(pk=request.data['send'])
         receive = User.objects.get(pk=request.data['receive'])
         value = decimal.Decimal(request.data['value'])
-
-        print(send.password)
 
         if send.balance >= value:
             sender_object = {
@@ -88,5 +88,4 @@ class TransferAPIView(GenericAPIView):
                 serializer.save()
             else:
                 return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        return 
+        return

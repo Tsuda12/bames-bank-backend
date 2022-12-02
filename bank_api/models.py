@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
 from datetime import datetime, timedelta
-from random import randint
 import jwt
 
 
@@ -30,8 +29,8 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractUser):
     username = models.CharField(max_length=45)
-    cpf = models.CharField(max_length=14, unique=True)
-    email = models.CharField(max_length=80, unique=True)
+    cpf = models.CharField(max_length=14, unique=True, editable=True)
+    email = models.CharField(max_length=80, unique=True, editable=True)
     wage = models.DecimalField(max_digits=9, decimal_places=2)
     
     # Account settings
